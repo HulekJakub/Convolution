@@ -14,9 +14,10 @@ namespace data
     private:
         vector<vector<vector<float>>> data_;
 
-        void init(int depth, int width, int height);
+        void init(int channels, int width, int height);
+        static float get_random();
     public:
-        Tensor(int depth, int width, int height);
+        Tensor(int channels, int width, int height);
         Tensor(int width, int height);
         Tensor(int height);
         Tensor(vector<vector<vector<float>>> &&data);
