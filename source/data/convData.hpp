@@ -33,8 +33,9 @@ namespace data
 
         };
 
-        ConvDataIterator begin() const { return ConvDataIterator(0, this); }
-        ConvDataIterator end() const { return ConvDataIterator(data_.size(), this); }
+        ConvDataIterator begin() const;
+        ConvDataIterator end() const;
+        std::size_t size() const;
     };
     
 }

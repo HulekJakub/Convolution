@@ -10,8 +10,6 @@ namespace convolution
     {
 
     public:
-        IConv(){}
-        virtual ConvData run(ConvData data);
-        virtual ~IConv() { }
+        virtual ConvData run(ConvData data) const = 0;
     };
 }

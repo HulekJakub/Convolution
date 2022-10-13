@@ -1,4 +1,6 @@
 #include "tensor.hpp"
+#include <algorithm>
+#include <random>
 #include <iostream>
 #include "../utils/vec3.hpp"
 
@@ -8,9 +10,9 @@ using std::endl;
 namespace data
 {
 
-    Tensor::Tensor(int depth, int width, int height)
+    Tensor::Tensor(int channels, int width, int height)
     {
-        Tensor::init(depth, width, height);
+        Tensor::init(channels, width, height);
     }
 
     Tensor::Tensor(int width, int height)
@@ -37,21 +39,21 @@ namespace data
     {
     }
 
-    void Tensor::init(int depth, int width, int height)
+    void Tensor::init(int channels, int width, int height)
     {
-        if(depth <= 0 || width <= 0 || height <= 0)
+        if(channels <= 0 || width <= 0 || height <= 0)
         {
             throw new std::invalid_argument("All of the tensor dimensions must be positive");
         }
 
-        data_ = vector<vector<vector<float>>>();
-        data_.resize(depth);
-        for (auto &&vector1 : data_)
+        data_ = vector<vector<vector<float>>>(channels);
+        for (auto &&vector2d : data_)
         {
-            vector1.resize(width);
-            for(auto &&vector2 : vector1)
+            vector2d.resize(width);
+            for(auto &&vector1d : vector2d)
             {
-                vector2.resize(height);
+                vector1d.resize(height);
+                std::generate(vector1d.begin(), vector1d.end(), get_random);
             }
         }
     }
@@ -72,15 +74,22 @@ namespace data
             cout << "  [" << endl;
             for(auto &&vector2 : vector1)
             {
-                cout << "    ";
+                cout << "    [";
                 for(auto &&x : vector2)
                 {
                     cout << x << ", ";
                 }
-                cout << endl;
+                cout << "]" << endl;
             }
             cout << "  ]," << endl;
         }
         cout << "]" << endl;
+    }
+
+    float Tensor::get_random()
+    {
+        static std::default_random_engine e;
+        static std::uniform_real_distribution<> dis(0, 1);
+        return dis(e);
     }
 }
