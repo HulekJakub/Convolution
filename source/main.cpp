@@ -21,9 +21,9 @@ vector<Tensor> generateData(int batches, int channels, int width, int height)
   res.reserve(batches);
   for (size_t h = 0; h < batches; h++)
   {
-    res.push_back(Tensor(channels, width, height));
+      res.push_back(Tensor(channels, width, height));
   }
-  
+
   return res;
 }
 

@@ -25,12 +25,12 @@ namespace utils
         Tensor::init(1, 1, height);
     }
 
-    Tensor::Tensor(vector<vector<vector<float>>> &&data)
+    Tensor::Tensor(vector<vector<vector<float>>> &data)
     {
         data_ = data;
     }
 
-    vector<vector<vector<float>>>& Tensor::data()
+    const vector<vector<vector<float>>>& Tensor::data() const
     {
         return data_;
     }
@@ -60,7 +60,10 @@ namespace utils
 
     utils::Vec3<std::size_t> Tensor::shape() const
     {
-        return utils::Vec3<std::size_t>(data_.size(), data_.front().size() ,data_.front().front().size());
+        auto x = data_.size();
+        auto y = x != 0 ? data_.front().size() : 0;
+        auto z = y != 0 ? data_.front().front().size() : 0;
+        return utils::Vec3<std::size_t>(x, y, z);
     }
 
     void Tensor::print() const

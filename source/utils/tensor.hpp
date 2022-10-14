@@ -20,8 +20,8 @@ namespace utils
         Tensor(int channels, int width, int height);
         Tensor(int width, int height);
         Tensor(int height);
-        Tensor(vector<vector<vector<float>>> &&data);
-        vector<vector<vector<float>>>& data();
+        Tensor(vector<vector<vector<float>>> &data);
+        const vector<vector<vector<float>>>& data() const;
         utils::Vec3<std::size_t> shape() const;
         void print() const;
         ~Tensor();

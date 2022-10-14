@@ -11,14 +11,14 @@ namespace convolution
         {
             setWeights((*data.begin()).shape().x());
         }
+        std::cout << "dupa1" << std::endl;
 
         vector<Tensor> results;
         results.reserve(data.size());
 
         for (auto &&batch : data)
         {
-            auto padded = logic_.pad(batch, args_.padding());
-            results.push_back(logic_.convolute(padded, weights_, args_.strides()));
+            results.push_back(logic_.runConvolution(batch, weights_, args_.strides(), args_.padding()));
         }
 
         return ConvData(results);
