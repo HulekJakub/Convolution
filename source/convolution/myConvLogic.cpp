@@ -8,7 +8,7 @@ namespace convolution
         return data;
     }
 
-    Tensor MyConvLogic::convolute(const Tensor& data, const vector<Tensor>& kernels, const Vec2<int>& strides) const
+    Tensor MyConvLogic::convolute(const Tensor& data, const vector<Tensor>& weights, const Vec2<int>& strides) const
     {
         return data;
     }

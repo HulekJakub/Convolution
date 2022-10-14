@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <memory>
-#include "tensor.hpp"
+#include "../utils/tensor.hpp"
 
-
+using utils::Tensor;
 using std::vector;
 using std::unique_ptr;
 

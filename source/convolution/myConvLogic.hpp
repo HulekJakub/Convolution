@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../data/tensor.hpp"
+#include "../utils/tensor.hpp"
 #include "../data/convArgs.hpp"
 #include "../utils/vec2.hpp"
 
-using data::Tensor;
+using utils::Tensor;
 using data::Padding;
 using utils::Vec2;
 
@@ -15,7 +15,7 @@ namespace convolution
 
     public:
         Tensor pad(const Tensor& data, Padding padding) const;
-        Tensor convolute(const Tensor& data, const vector<Tensor>& kernels, const Vec2<int>& strides) const;
+        Tensor convolute(const Tensor& data, const vector<Tensor>& weights, const Vec2<int>& strides) const;
     };
     
 }

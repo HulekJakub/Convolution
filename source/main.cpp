@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
 
-#include "data/tensor.hpp"
+#include "utils/tensor.hpp"
 #include "data/convArgs.hpp"
 #include "data/convData.hpp"
 #include "utils/vec2.hpp"
 #include "convolution/myConv.hpp"
 
-using data::Tensor;
+using utils::Tensor;
 using std::vector;
 using utils::Vec2;
 using data::ConvArgs;
@@ -29,9 +29,9 @@ vector<Tensor> generateData(int batches, int channels, int width, int height)
 
 int main(int argc, char** argv)
 {
-  int n = 2, c = 3, h=4, w=4;
+  int n = 1, c = 2, h=4, w=4;
   
-  ConvArgs args(256, Vec2<int>(3));
+  ConvArgs args(2, Vec2<int>(3));
   ConvData data(generateData(n, c, w, h));
   MyConv conv(args);
 
@@ -40,6 +40,11 @@ int main(int argc, char** argv)
   for (auto &&batch : res)
   {
     batch.print();
+  }
+
+  for (auto &&filter : conv.weights())
+  {
+    filter.print();
   }
 }
 

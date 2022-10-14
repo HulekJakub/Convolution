@@ -4,6 +4,5 @@ target_sources(conv_lib
         convArgs.hpp
         convData.cpp
         convData.hpp
-        tensor.cpp
-        tensor.hpp
+
 )

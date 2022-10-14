@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <memory>
-#include "../utils/vec3.hpp"
+#include "vec3.hpp"
 
 using std::vector;
 using std::unique_ptr;
 
-namespace data
+namespace utils
 {
     class Tensor
     {

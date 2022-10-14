@@ -7,7 +7,7 @@
 using std::cout;
 using std::endl;
 
-namespace data
+namespace utils
 {
 
     Tensor::Tensor(int channels, int width, int height)
