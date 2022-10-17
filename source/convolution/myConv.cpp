@@ -11,14 +11,13 @@ namespace convolution
         {
             setWeights((*data.begin()).shape().x());
         }
-        std::cout << "dupa1" << std::endl;
 
         vector<Tensor> results;
         results.reserve(data.size());
 
         for (auto &&batch : data)
         {
-            results.push_back(logic_.runConvolution(batch, weights_, args_.strides(), args_.padding()));
+            results.push_back(logic_.runConvolution(batch, weights_, biases_, args_.strides(), args_.padding()));
         }
 
         return ConvData(results);
@@ -28,6 +27,7 @@ namespace convolution
     void MyConv::setWeights(const vector<Tensor>& weights)
     {
         weights_ = weights;
+        biases_ = vector<float> (weights.size(), 0);
     }
 
     void MyConv::setWeights(int channels)
@@ -37,6 +37,7 @@ namespace convolution
         {
             weights_.push_back(Tensor(channels, args_.kernelSize().x(), args_.kernelSize().y()));
         }
+        biases_ = vector<float> (weights_.size(), 0);
     }
 
     const vector<Tensor>& MyConv::weights() const

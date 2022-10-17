@@ -3,14 +3,14 @@
 namespace convolution
 {
 
-    Tensor MyConvLogic::runConvolution(const Tensor& data, const vector<Tensor>& weights, const Vec2<int>& strides, const vector<int>& padding) const
+    Tensor MyConvLogic::runConvolution(const Tensor& data, const vector<Tensor>& weights, vector<float> biases, const Vec2<int>& strides, const vector<int>& padding) const
     {
         vector<vector<vector<float>>> result;
         result.reserve(weights.size());
 
-        for (auto &filter : weights)
+        for (size_t i = 0; i < weights.size(); i++)
         {
-            auto filterResults = calculateForFilter(data, filter, strides, padding);
+            auto filterResults = calculateForFilter(data, weights[i], biases[i], strides, padding);
 
             result.push_back(filterResults);
         }
@@ -18,7 +18,7 @@ namespace convolution
         return Tensor(result);
     }
 
-    vector<vector<float>> MyConvLogic::calculateForFilter(const Tensor& data, const Tensor& filter, const Vec2<int>& strides, const vector<int>& padding) const
+    vector<vector<float>> MyConvLogic::calculateForFilter(const Tensor& data, const Tensor& filter, float bias, const Vec2<int>& strides, const vector<int>& padding) const
     {
         auto image = data.data();
         auto filter_data = filter.data();
@@ -35,7 +35,8 @@ namespace convolution
             
             for (size_t j = 0; j <= padded_image.front().front().size() - filter_size.y(); j += strides.y())
             {
-                auto sum = dotSum(padded_image, Vec2<int>(i, j), Vec2<int>(i + filter_size.x(), j + filter_size.y()), filter_data);\
+                auto sum = dotSum(padded_image, Vec2<int>(i, j), Vec2<int>(i + filter_size.x(), j + filter_size.y()), filter_data);
+                sum += bias;
                 auto activated_sum = activationFunction(sum);
                 vec1d.push_back(activated_sum);
             }
