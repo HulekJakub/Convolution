@@ -15,7 +15,7 @@ namespace utils
         vector<vector<vector<float>>> data_;
 
         void init(int channels, int height, int width);
-        static float get_random();
+        static float getRandom();
     public:
         Tensor(int channels, int height, int width);
         Tensor(int height, int width);

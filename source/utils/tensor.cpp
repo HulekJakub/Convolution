@@ -53,7 +53,7 @@ namespace utils
             for(auto &&vector1d : vector2d)
             {
                 vector1d.resize(width);
-                std::generate(vector1d.begin(), vector1d.end(), get_random);
+                std::generate(vector1d.begin(), vector1d.end(), getRandom);
             }
         }
     }
@@ -89,7 +89,7 @@ namespace utils
         cout << "]" << endl;
     }
 
-    float Tensor::get_random()
+    float Tensor::getRandom()
     {
         static std::default_random_engine e;
         static std::uniform_real_distribution<> dis(0, 1);

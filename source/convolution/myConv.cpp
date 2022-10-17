@@ -27,7 +27,7 @@ namespace convolution
     void MyConv::setWeights(const vector<Tensor>& weights)
     {
         weights_ = weights;
-        biases_ = vector<float> (weights.size(), 0);
+        initBiases();
     }
 
     void MyConv::setWeights(int channels)
@@ -37,7 +37,13 @@ namespace convolution
         {
             weights_.push_back(Tensor(channels, args_.kernelSize().x(), args_.kernelSize().y()));
         }
+        initBiases();
+    }
+
+    void MyConv::initBiases()
+    {
         biases_ = vector<float> (weights_.size(), 0);
+        std::generate(biases_.begin(), biases_.end(), getRandomBias);
     }
 
     const vector<Tensor>& MyConv::weights() const
@@ -45,4 +51,16 @@ namespace convolution
         return weights_;
     }
 
+    const vector<float>& MyConv::biases() const
+    {
+        return biases_;
+    }
+
+
+    float MyConv::getRandomBias()
+    {
+        static std::default_random_engine e;
+        static std::uniform_real_distribution<> dis(-1, 1);
+        return dis(e);
+    }
 }

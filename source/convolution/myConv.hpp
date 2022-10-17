@@ -1,6 +1,8 @@
 #pragma once
 
 #include<iostream>
+#include <algorithm>
+#include <random>
 #include "../data/convData.hpp"
 #include "../data/convArgs.hpp"
 #include "../utils/tensor.hpp"
@@ -23,6 +25,8 @@ namespace convolution
         vector<Tensor> weights_; 
         vector<float> biases_; 
 
+        void initBiases();
+        static float getRandomBias();
 
     public:
         MyConv(ConvArgs args, MyConvLogic logic=MyConvLogic()): args_(args), logic_(logic) {}
@@ -32,6 +36,8 @@ namespace convolution
         ~MyConv(){}
 
         const vector<Tensor>& weights() const;
+        const vector<float>& biases() const;
+
     };
     
 }
