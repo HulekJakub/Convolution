@@ -39,7 +39,7 @@ namespace convolution
         }
     }
 
-    vector<Tensor> MyConv::weights() const
+    const vector<Tensor>& MyConv::weights() const
     {
         return weights_;
     }

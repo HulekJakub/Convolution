@@ -14,12 +14,12 @@ namespace utils
     private:
         vector<vector<vector<float>>> data_;
 
-        void init(int channels, int width, int height);
+        void init(int channels, int height, int width);
         static float get_random();
     public:
-        Tensor(int channels, int width, int height);
-        Tensor(int width, int height);
-        Tensor(int height);
+        Tensor(int channels, int height, int width);
+        Tensor(int height, int width);
+        Tensor(int width);
         Tensor(vector<vector<vector<float>>> &data);
         const vector<vector<vector<float>>>& data() const;
         utils::Vec3<std::size_t> shape() const;

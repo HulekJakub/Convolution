@@ -29,22 +29,24 @@ vector<Tensor> generateData(int batches, int channels, int width, int height)
 
 int main(int argc, char** argv)
 {
-  int n = 1, c = 2, h=4, w=4;
+  int n = 1, c = 2, h=5, w=5;
   
-  ConvArgs args(2, Vec2<int>(3));
+  ConvArgs args(1, Vec2<int>(3), Vec2<int>(1), vector<int> {1,1,0,0});
   ConvData data(generateData(n, c, w, h));
   MyConv conv(args);
 
   auto res = conv.run(data);
 
+  std::cout<<"Data: \n";
+  for (auto &&batch : data)
+  {
+    batch.print();
+  }
+  std::cout<<"Result: \n";
   for (auto &&batch : res)
   {
     batch.print();
   }
 
-  for (auto &&filter : conv.weights())
-  {
-    filter.print();
-  }
 }
 

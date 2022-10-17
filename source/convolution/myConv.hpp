@@ -6,7 +6,6 @@
 #include "../utils/tensor.hpp"
 #include "../utils/vec3.hpp"
 #include "myConvLogic.hpp"
-#include "iconv.hpp"
 
 using data::ConvData;
 using utils::Tensor;
@@ -16,21 +15,23 @@ using utils::Vec3;
 
 namespace convolution
 {
-    class MyConv : public IConv
+    class MyConv
     {
     private:
         ConvArgs args_;
         MyConvLogic logic_;
         vector<Tensor> weights_; 
+        vector<float> biases_; 
+
 
     public:
         MyConv(ConvArgs args, MyConvLogic logic=MyConvLogic()): args_(args), logic_(logic) {}
-        ConvData run(ConvData data) override;
+        ConvData run(ConvData data);
         void setWeights(const vector<Tensor>& weights);
         void setWeights(int channels);
         ~MyConv(){}
 
-        vector<Tensor> weights() const;
+        const vector<Tensor>& weights() const;
     };
     
 }

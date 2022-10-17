@@ -15,7 +15,7 @@ namespace data
         int n_kernels_;
         Vec2<int> kernel_size_;
         Vec2<int> strides_;
-        std::vector<int> padding_;
+        std::vector<int> padding_; // (left, top, right, bottom)
 
     public:
         ConvArgs(int n_kernels, Vec2<int> kernel_size, Vec2<int> strides=Vec2<int>(1), std::vector<int> padding=std::vector<int>{0,0,0,0}): 

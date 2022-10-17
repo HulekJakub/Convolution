@@ -14,12 +14,12 @@ namespace utils
         Vec2(T x, T y): x_(x), y_(y){}
         ~Vec2(){}
 
-        T x()
+        T x() const
         {
         return x_;
         }
 
-        T y()
+        T y() const
         {
         return y_;
         }

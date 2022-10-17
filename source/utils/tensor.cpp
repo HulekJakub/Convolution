@@ -10,19 +10,19 @@ using std::endl;
 namespace utils
 {
 
-    Tensor::Tensor(int channels, int width, int height)
+    Tensor::Tensor(int channels, int height, int width)
     {
-        Tensor::init(channels, width, height);
+        Tensor::init(channels, height, width);
     }
 
-    Tensor::Tensor(int width, int height)
+    Tensor::Tensor(int height, int width)
     {
-        Tensor::init(1, width, height);
+        Tensor::init(1, height, width);
     }
 
-    Tensor::Tensor(int height)
+    Tensor::Tensor(int width)
     {
-        Tensor::init(1, 1, height);
+        Tensor::init(1, 1, width);
     }
 
     Tensor::Tensor(vector<vector<vector<float>>> &data)
@@ -39,9 +39,9 @@ namespace utils
     {
     }
 
-    void Tensor::init(int channels, int width, int height)
+    void Tensor::init(int channels, int height, int width)
     {
-        if(channels <= 0 || width <= 0 || height <= 0)
+        if(channels <= 0 || height <= 0 || width <= 0)
         {
             throw new std::invalid_argument("All of the tensor dimensions must be positive");
         }
@@ -49,10 +49,10 @@ namespace utils
         data_ = vector<vector<vector<float>>>(channels);
         for (auto &&vector2d : data_)
         {
-            vector2d.resize(width);
+            vector2d.resize(height);
             for(auto &&vector1d : vector2d)
             {
-                vector1d.resize(height);
+                vector1d.resize(width);
                 std::generate(vector1d.begin(), vector1d.end(), get_random);
             }
         }
