@@ -4,4 +4,6 @@ target_sources(conv_lib
         myConv.hpp
         myConvLogic.hpp
         myConvLogic.cpp
+        onednnConv.hpp
+        onednnConv.cpp
 )

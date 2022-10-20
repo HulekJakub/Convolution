@@ -10,88 +10,84 @@ using std::endl;
 namespace utils
 {
 
-    Tensor::Tensor(int channels, int height, int width)
+    Tensor::Tensor(Vec3<int> shape)
     {
-        Tensor::init(channels, height, width);
+        Tensor::init(shape);
     }
 
-    Tensor::Tensor(int height, int width)
+    Tensor::Tensor(const vector<float> &data, Vec3<int> shape)
     {
-        Tensor::init(1, height, width);
-    }
-
-    Tensor::Tensor(int width)
-    {
-        Tensor::init(1, 1, width);
-    }
-
-    Tensor::Tensor(vector<vector<vector<float>>> &data)
-    {
+        if(data.size() != shape.mul())
+        {
+            throw new std::invalid_argument("Data size is not compatible with shape");
+        }
         data_ = data;
-    }
+        shape_ = shape;
+    }   
 
-    const vector<vector<vector<float>>>& Tensor::data() const
+    float Tensor::get(int c_idx, int h_idx, int w_idx) const
     {
-        return data_;
+        if (c_idx >= shape_.x() || h_idx >= shape_.y() || w_idx >= shape_.z() )
+        {
+            throw new std::invalid_argument("Index out of bounds");
+        }
+        return data_[c_idx * shape_.y() * shape_.z() + h_idx * shape_.z() + w_idx];
     }
     
     Tensor::~Tensor()
     {
     }
 
-    void Tensor::init(int channels, int height, int width)
+    void Tensor::init(Vec3<int> shape)
     {
-        if(channels <= 0 || height <= 0 || width <= 0)
+        if(shape.x() <= 0 || shape.y() <= 0 || shape.z() <= 0)
         {
             throw new std::invalid_argument("All of the tensor dimensions must be positive");
         }
+        shape_ = shape;
 
-        data_ = vector<vector<vector<float>>>(channels);
-        for (auto &&vector2d : data_)
-        {
-            vector2d.resize(height);
-            for(auto &&vector1d : vector2d)
-            {
-                vector1d.resize(width);
-                std::generate(vector1d.begin(), vector1d.end(), getRandom);
-            }
-        }
+        data_ = vector<float>(shape_.mul());
+
+        std::generate(data_.begin(), data_.end(), getRandom);
     }
 
-    utils::Vec3<std::size_t> Tensor::shape() const
+    const Vec3<int>& Tensor::shape() const
     {
-        auto x = data_.size();
-        auto y = x != 0 ? data_.front().size() : 0;
-        auto z = y != 0 ? data_.front().front().size() : 0;
-        return utils::Vec3<std::size_t>(x, y, z);
+        return shape_;
     }
 
     void Tensor::print() const
     {
-        auto tensor_shape = shape();
-
-        cout << "Tensor of dimensions (" << tensor_shape.x() << ", " << tensor_shape.y() << ", " << tensor_shape.z() << ")" << endl;
+        cout << "Tensor of dimensions "; shape_.print();
         cout << "[" << endl;
-        for (auto &&vector1 : data_)
+        for (size_t i = 0; i < shape_.x(); i++)
         {
             cout << "  [" << endl;
-            for(auto &&vector2 : vector1)
+            int add_c = shape_.x() * i;
+            for (size_t j = 0; j < shape_.y(); j++)
             {
                 cout << "    [";
-                for(auto &&x : vector2)
+                int add_h = shape_.y() * j;
+                for (size_t k = 0; k < shape_.z(); k++)
                 {
-                    cout << x << ", ";
+                    cout << data_[add_c + add_h + k] << ", ";
                 }
-                cout << "]" << endl;
+                cout << "]," << endl;
             }
-            cout << "  ]," << endl;
+            cout << "  ]," << endl; 
         }
         cout << "]" << endl;
+    }
+
+    int Tensor::size() const
+    {
+        return shape_.mul();
     }
 
     float Tensor::getRandom()
     {
         static std::default_random_engine e;
+        e.seed(std::chrono::system_clock::now().time_since_epoch().count());
         static std::uniform_real_distribution<> dis(0, 1);
         return dis(e);
     }

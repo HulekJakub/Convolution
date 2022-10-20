@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <chrono>
 #include "vec3.hpp"
 
 using std::vector;
@@ -12,18 +13,19 @@ namespace utils
     class Tensor
     {
     private:
-        vector<vector<vector<float>>> data_;
+        vector<float> data_;
+        Vec3<int> shape_;
 
-        void init(int channels, int height, int width);
+
+        void init(Vec3<int> shape);
         static float getRandom();
     public:
-        Tensor(int channels, int height, int width);
-        Tensor(int height, int width);
-        Tensor(int width);
-        Tensor(vector<vector<vector<float>>> &data);
-        const vector<vector<vector<float>>>& data() const;
-        utils::Vec3<std::size_t> shape() const;
+        Tensor(Vec3<int> shape);
+        Tensor(const vector<float> &data, Vec3<int> shape);
+        float get(int c_idx, int h_idx, int w_idx) const;
+        const Vec3<int>& shape() const;
         void print() const;
+        int size() const;
         ~Tensor();
     };
 }

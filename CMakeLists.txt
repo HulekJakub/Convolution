@@ -20,13 +20,13 @@ endif()
 endif()
 
 
-# FetchContent_Declare(
-# dnnl
-# GIT_REPOSITORY https://github.com/intel/mkl-dnn
-# GIT_TAG v2.1
-# GIT_SHALLOW TRUE
-# )
-# FetchContent_MakeAvailable(dnnl)
+FetchContent_Declare(
+dnnl
+GIT_REPOSITORY https://github.com/intel/mkl-dnn
+GIT_TAG v2.1
+GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(dnnl)
 
 add_library(conv_lib "")
 add_subdirectory(source/data)
@@ -35,5 +35,6 @@ add_subdirectory(source/utils)
 
 add_executable(my-convolution ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp) 
 
+target_link_libraries(conv_lib PUBLIC dnnl)
 target_link_libraries(my-convolution conv_lib)
-# target_link_libraries(my-convolution m dnnl)
+
