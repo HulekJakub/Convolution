@@ -46,29 +46,26 @@ vector<Tensor> generateOnes(int batches, int channels, int height, int width)
 
 int main(int argc, char** argv)
 {
+  // Data and args setup
   int n = 1, c = 2, h=5, w=5;
-  
   int n_kernels = 1, kernel_size = 3;
   ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(2), vector<int> {2,2,2,2});
   ConvData data(generateData(n, c, h, w));
-  MyConv conv(args);
-  conv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
-  conv.setBiases(vector<float>(n_kernels, 0));
 
   std::cout<<"Data: \n";
   for (auto &&batch : data)
   {
     batch.print();
   }
-  std::cout<<"Weights: \n";
-  for (auto &&filter : conv.weights())
-  {
-    filter.print();
-  }
+
+  // My convolution
+  MyConv myConv(args);
+  myConv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
+  myConv.setBiases(vector<float>(n_kernels, 0));
 
   try
   {
-    auto res = conv.execute(data);
+    auto res = myConv.execute(data);
     std::cout<<"Result: \n";
     for (auto &&batch : res)
     {
@@ -84,9 +81,28 @@ int main(int argc, char** argv)
     std::cout << e << '\n';
   }
  
-  OnednnConv a;
+  std::cout << std::string(100, '-') << std::endl;
+  // OneDnn convolution
+  OnednnConv onednnConv(args);
+  onednnConv.setWeights(ConvData(myConv.weights()));
+  onednnConv.setBiases(vector<float>(n_kernels, 0));
 
-
-
+  try
+  {
+    auto res = onednnConv.execute(data);
+    std::cout<<"Result: \n";
+    for (auto &&batch : res)
+    {
+      batch.print();
+    }
+  }
+  catch(const std::invalid_argument& e)
+  {
+    std::cout << e.what() << '\n';
+  }
+  catch(std::string& e)
+  {
+    std::cout << e << '\n';
+  }
 }
 

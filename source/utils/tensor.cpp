@@ -51,6 +51,12 @@ namespace utils
         std::generate(data_.begin(), data_.end(), getRandom);
     }
 
+    vector<float> Tensor::copyData() const
+    {
+        return data_;
+    }
+
+
     const Vec3<int>& Tensor::shape() const
     {
         return shape_;
