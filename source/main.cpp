@@ -30,20 +30,40 @@ vector<Tensor> generateData(int batches, int channels, int height, int width)
   return res;
 }
 
+vector<Tensor> generateOnes(int batches, int channels, int height, int width)
+{
+  vector<Tensor> res;
+  res.reserve(batches);
+
+  for (size_t h = 0; h < batches; h++)
+  {
+    vector<float> data(channels * height * width, 1.f);
+    res.push_back(Tensor(data, Vec3<int>(channels, height, width)));
+  }
+
+  return res;
+}
+
 int main(int argc, char** argv)
 {
   int n = 1, c = 2, h=5, w=5;
   
-  ConvArgs args(4, Vec2<int>(3), Vec2<int>(2), vector<int> {2,2,0,0});
+  int n_kernels = 1, kernel_size = 3;
+  ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(2), vector<int> {2,2,2,2});
   ConvData data(generateData(n, c, h, w));
   MyConv conv(args);
-  conv.setWeights(c);
-  conv.setBiases();
+  conv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
+  conv.setBiases(vector<float>(n_kernels, 0));
 
   std::cout<<"Data: \n";
   for (auto &&batch : data)
   {
     batch.print();
+  }
+  std::cout<<"Weights: \n";
+  for (auto &&filter : conv.weights())
+  {
+    filter.print();
   }
 
   try

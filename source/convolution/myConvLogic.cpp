@@ -69,7 +69,6 @@ namespace convolution
             for (size_t i = 0; i < padding[3]; i++)
             {   
                 padded_image_data.insert(padded_image_data.end(), row_padding.begin(), row_padding.end());
-
             }
         }
 
@@ -118,7 +117,7 @@ namespace convolution
                 }
             }
         }
-
+        
         return dot_sum;
     }
 }

@@ -63,14 +63,12 @@ namespace utils
         for (size_t i = 0; i < shape_.x(); i++)
         {
             cout << "  [" << endl;
-            int add_c = shape_.x() * i;
             for (size_t j = 0; j < shape_.y(); j++)
             {
                 cout << "    [";
-                int add_h = shape_.y() * j;
                 for (size_t k = 0; k < shape_.z(); k++)
                 {
-                    cout << data_[add_c + add_h + k] << ", ";
+                    cout << get(i, j, k) << ", ";
                 }
                 cout << "]," << endl;
             }
