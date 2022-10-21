@@ -1,4 +1,12 @@
 #pragma once
+
+// rdtsc
+#ifdef _WIN32
+#include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+
 #include <dnnl.hpp>
 #include <exception>
 #include "../data/convArgs.hpp"
@@ -20,6 +28,8 @@ namespace convolution
         vector<float> biases_; 
         convolution_forward conv;
 
+        unsigned long long time_taken_ = 0;
+
         static float getRandomBias();
         inline void write_to_dnnl_memory(void *handle, dnnl::memory &mem);
         inline void read_from_dnnl_memory(void *handle, dnnl::memory &mem);
@@ -34,6 +44,8 @@ namespace convolution
 
         const vector<Tensor>& weights() const;
         const vector<float>& biases() const;
+
+        unsigned long long timeTaken() const;
     };
 
 

@@ -1,5 +1,12 @@
 #pragma once
 
+// rdtsc
+#ifdef _WIN32
+#include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -26,6 +33,8 @@ namespace convolution
         vector<Tensor> weights_; 
         vector<float> biases_; 
 
+        unsigned long long time_taken_ = 0;
+
         static float getRandomBias();
 
     public:
@@ -37,6 +46,7 @@ namespace convolution
         void setBiases();
         ~MyConv(){}
 
+        unsigned long long timeTaken() const;
         const vector<Tensor>& weights() const;
         const vector<float>& biases() const;
 

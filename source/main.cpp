@@ -11,6 +11,8 @@
 
 using utils::Tensor;
 using std::vector;
+using std::cout;
+using std::endl;
 using utils::Vec2;
 using utils::Vec3;
 using data::ConvArgs;
@@ -47,15 +49,18 @@ vector<Tensor> generateOnes(int batches, int channels, int height, int width)
 int main(int argc, char** argv)
 {
   // Data and args setup
-  int n = 1, c = 2, h=5, w=5;
-  int n_kernels = 1, kernel_size = 3;
-  ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(2), vector<int> {2,2,2,2});
+  int n = 5, c = 3, h=256, w=256;
+  int n_kernels = 32, kernel_size = 5;
+  auto padding = vector<int> {0,0,0,0};
+  auto stride = 2;
+  
+  ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(stride), padding);
   ConvData data(generateData(n, c, h, w));
 
   std::cout<<"Data: \n";
   for (auto &&batch : data)
   {
-    batch.print();
+    // batch.print();
   }
 
   // My convolution
@@ -63,23 +68,30 @@ int main(int argc, char** argv)
   myConv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
   myConv.setBiases(vector<float>(n_kernels, 0));
 
-  try
+  auto iters = 10;
+
+  for (size_t i = 0; i < iters; i++)
   {
-    auto res = myConv.execute(data);
-    std::cout<<"Result: \n";
-    for (auto &&batch : res)
+    try
     {
-      batch.print();
+      // cout << "Myconv iter: " << i << endl;
+      // auto res = myConv.execute(data);
+      // cout<<"Result: \n";
+      // for (auto &&batch : res)
+      // {
+      //   // batch.print();
+      // }
+    }
+    catch(const std::invalid_argument& e)
+    {
+      cout << e.what() << endl;
+    }
+    catch(std::string& e)
+    {
+      cout << e << endl;
     }
   }
-  catch(const std::invalid_argument& e)
-  {
-    std::cout << e.what() << '\n';
-  }
-  catch(std::string& e)
-  {
-    std::cout << e << '\n';
-  }
+  
  
   std::cout << std::string(100, '-') << std::endl;
   // OneDnn convolution
@@ -87,22 +99,48 @@ int main(int argc, char** argv)
   onednnConv.setWeights(ConvData(myConv.weights()));
   onednnConv.setBiases(vector<float>(n_kernels, 0));
 
-  try
+  for (size_t i = 0; i < iters; i++)
   {
-    auto res = onednnConv.execute(data);
-    std::cout<<"Result: \n";
-    for (auto &&batch : res)
+    try
     {
-      batch.print();
+      cout << "Onednn iter: " << i << endl;
+      auto res = onednnConv.execute(data);
+      cout<<"Result: \n";
+      for (auto &&batch : res)
+      {
+        // batch.print();
+      }
+    }
+    catch(const std::invalid_argument& e)
+    {
+      cout << e.what() << endl;
+    }
+    catch(std::string& e)
+    {
+      cout << e << endl;
     }
   }
-  catch(const std::invalid_argument& e)
-  {
-    std::cout << e.what() << '\n';
-  }
-  catch(std::string& e)
-  {
-    std::cout << e << '\n';
-  }
+  cout << "My conv average time: " << myConv.timeTaken() / iters << endl;
+  cout << "Onednn conv average time: " << onednnConv.timeTaken() / iters << endl;;
+
+  // for:
+  // int n = 1, c = 2, h=5, w=5;
+  // int n_kernels = 1, kernel_size = 3;
+  // auto padding = vector<int> {2,2,2,2}
+  // auto stride = 2;
+  // My conv average time: 13651
+  // Onednn conv average time: 6208
+  // my was 2 times slower
+
+  // for:
+  // int n = 5, c = 3, h=256, w=256;
+  // int n_kernels = 32, kernel_size = 5;
+  // auto padding = vector<int> {0,0,0,0};
+  // auto stride = 2;
+  // My conv average time: 18897972098
+  // Onednn conv average time: 7846451
+  // my was 2400 times slower
+
+  
 }
 

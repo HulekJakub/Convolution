@@ -21,10 +21,13 @@ namespace convolution
         vector<Tensor> results;
         results.reserve(data.size());
 
+        auto start_time = __rdtsc();
         for (auto &&batch : data)
         {
             results.push_back(logic_.runConvolution(batch, weights_, biases_, args_.strides(), args_.padding()));
         }
+        auto end_time = __rdtsc();
+        time_taken_ += end_time - start_time;
 
         return ConvData(results);
     }
@@ -81,6 +84,10 @@ namespace convolution
         return biases_;
     }
 
+    unsigned long long MyConv::timeTaken() const
+    {
+        return time_taken_;
+    }
 
     float MyConv::getRandomBias()
     {
