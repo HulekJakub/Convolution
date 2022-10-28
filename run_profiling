@@ -1,0 +1,5 @@
+perf record --call-graph lbr build/my-convolution
+mkdir profiling
+perf inject -j -i profiling/perf.data -o profiling/perf.data.j
+perf script -i profiling/perf.data.j | /home/jhulek/apps/FlameGraph/stackcollapse-perf.pl > profiling/out.perf-folded
+/home/jhulek/apps/FlameGraph/flamegraph.pl profiling/out.perf-folded > profiling/my-convolution−flame-lbr.svg
