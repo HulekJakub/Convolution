@@ -97,6 +97,8 @@ namespace convolution
         primitive_attr conv_attr;
         conv_attr.set_post_ops(conv_ops);
     
+        auto start_time = __rdtsc();
+
         // Create primitive descriptor.
         auto conv_pd = convolution_forward::primitive_desc(conv_desc, conv_attr, engine);
     
@@ -137,7 +139,6 @@ namespace convolution
         conv_args.insert({DNNL_ARG_BIAS, user_bias_mem});
         conv_args.insert({DNNL_ARG_DST, conv_dst_mem});
     
-        auto start_time = __rdtsc();
         // Primitive execution: convolution with ReLU.
         conv_prim.execute(engine_stream, conv_args);
 

@@ -23,6 +23,7 @@ namespace utils
         Tensor(Vec3<int> shape);
         Tensor(const vector<float> &data, Vec3<int> shape);
         float get(int c_idx, int h_idx, int w_idx) const;
+        const float* getDataPtr(int idx) const;
         vector<float> copyData() const;
 
         const Vec3<int>& shape() const;

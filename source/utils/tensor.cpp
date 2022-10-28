@@ -33,6 +33,11 @@ namespace utils
         }
         return data_[c_idx * shape_.y() * shape_.z() + h_idx * shape_.z() + w_idx];
     }
+
+    const float* Tensor::getDataPtr(int idx) const
+    {
+        return data_.data() + idx;
+    }
     
     Tensor::~Tensor()
     {

@@ -107,15 +107,30 @@ namespace convolution
     float MyConvLogic::dotSum(const Tensor& image, const Vec2<int>& start, const Vec2<int>& end, const Tensor& filter) const
     {
         float dot_sum = 0.f;
+
+        int data_channel_size = image.shape().y() * image.shape().z();
+        int data_channel_offset = 0;
+        int data_start_gap_offset = start.x() * image.shape().z() + start.y();
+
+        int filter_channel_size = filter.shape().y() * filter.shape().z();
+        int filter_channel_offset = 0;
         for (size_t i = 0; i < image.shape().x(); i++)
         {
+            int data_row_idx = data_channel_offset + data_start_gap_offset;
+            int filter_row_idx = filter_channel_offset;
             for (size_t j = 0; j < end.x() - start.x(); j++)
             {
+                const float* data_row = image.getDataPtr(data_row_idx);
+                const float* filter_row = filter.getDataPtr(filter_row_idx);
                 for (size_t k = 0; k < end.y() - start.y(); k++)
                 {
-                    dot_sum += image.get(i, j + start.x(), k + start.y()) * filter.get(i, j, k);
+                    dot_sum += data_row[k] * filter_row[k];
                 }
+                data_row_idx += image.shape().z();
+                filter_row_idx += filter.shape().z();
             }
+            data_channel_offset += data_channel_size;
+            filter_channel_offset += filter_channel_size;
         }
         
         return dot_sum;

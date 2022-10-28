@@ -51,7 +51,7 @@ int main(int argc, char** argv)
   // Data and args setup
   int n = 5, c = 3, h=256, w=256;
   int n_kernels = 32, kernel_size = 5;
-  auto padding = vector<int> {0,0,0,0};
+  auto padding = vector<int> {4,4,4,4};
   auto stride = 2;
   
   ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(stride), padding);
@@ -68,19 +68,19 @@ int main(int argc, char** argv)
   myConv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
   myConv.setBiases(vector<float>(n_kernels, 0));
 
-  auto iters = 10;
+  auto iters = 100;
 
   for (size_t i = 0; i < iters; i++)
   {
     try
     {
-      // cout << "Myconv iter: " << i << endl;
-      // auto res = myConv.execute(data);
-      // cout<<"Result: \n";
-      // for (auto &&batch : res)
-      // {
-      //   // batch.print();
-      // }
+      cout << "Myconv iter: " << i << endl;
+      auto res = myConv.execute(data);
+      cout<<"Result: \n";
+      for (auto &&batch : res)
+      {
+        // batch.print();
+      }
     }
     catch(const std::invalid_argument& e)
     {
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     }
   }
   cout << "My conv average time: " << myConv.timeTaken() / iters << endl;
-  cout << "Onednn conv average time: " << onednnConv.timeTaken() / iters << endl;;
+  cout << "Onednn conv average time: " << onednnConv.timeTaken() / iters << endl;
 
   // for:
   // int n = 1, c = 2, h=5, w=5;
