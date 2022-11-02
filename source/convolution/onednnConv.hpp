@@ -24,7 +24,7 @@ namespace convolution
     {
     private:
         ConvArgs args_;
-        ConvData weights_; 
+        ConvData<float> weights_; 
         vector<float> biases_; 
         convolution_forward conv;
 
@@ -38,11 +38,11 @@ namespace convolution
         OnednnConv(ConvArgs args): args_(args) {}
         ~OnednnConv(){}
 
-        ConvData execute(ConvData data);
-        void setWeights(const ConvData& weights);
+        ConvData<float> execute(ConvData<float> data);
+        void setWeights(const ConvData<float>& weights);
         void setBiases(const vector<float>& biases);
 
-        const vector<Tensor>& weights() const;
+        const vector<Tensor<float>>& weights() const;
         const vector<float>& biases() const;
 
         unsigned long long timeTaken() const;

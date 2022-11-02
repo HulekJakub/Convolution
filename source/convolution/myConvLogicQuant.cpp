@@ -1,11 +1,10 @@
 #include "myConvLogic.hpp"
 
-using Tens = Tensor<float>;
 
 namespace convolution
 {
 
-    Tens MyConvLogic::runConvolution(const Tens& image, const vector<Tens>& weights, vector<float> biases, const Vec2<int>& strides, const vector<int>& padding) const
+    Tensor<float> MyConvLogic::runConvolution(const Tensor<float>& image, const vector<Tensor<float>>& weights, vector<float> biases, const Vec2<int>& strides, const vector<int>& padding) const
     {
         auto padded_image = padImage(image, padding);
         Vec2<int> kernel_size(weights.front().shape().y(), weights.front().shape().z());
@@ -20,7 +19,7 @@ namespace convolution
             result.insert(result.end(), filterResults.begin(), filterResults.end());
         }
 
-        return Tens(result, output_shape);
+        return Tensor<float>(result, output_shape);
     }
 
     Vec3<int> MyConvLogic::calculateOutputShape(const Vec3<int>& padded_image_shape, int n_kernels, const Vec2<int>& kernel_size, const Vec2<int>& strides) const
@@ -32,7 +31,7 @@ namespace convolution
     }
 
 
-    Tens MyConvLogic::padImage(const Tens& image, const vector<int>& padding) const
+    Tensor<float> MyConvLogic::padImage(const Tensor<float>& image, const vector<int>& padding) const
     {
         if(padding == vector<int>(4, 0))
         {
@@ -74,10 +73,10 @@ namespace convolution
             }
         }
 
-        return Tens(padded_image_data, padded_image_shape);
+        return Tensor<float>(padded_image_data, padded_image_shape);
     }
 
-    vector<float> MyConvLogic::calculateForFilter(const Tens& image, const Tens& filter, float bias, const Vec2<int>& strides, const Vec3<int>& layer_output_shape) const
+    vector<float> MyConvLogic::calculateForFilter(const Tensor<float>& image, const Tensor<float>& filter, float bias, const Vec2<int>& strides, const Vec3<int>& layer_output_shape) const
     {
         auto filter_height = filter.shape().y();
         auto filter_width = filter.shape().z();
@@ -106,7 +105,7 @@ namespace convolution
         return x < 0.0 ? 0.0 : x;
     }
 
-    float MyConvLogic::dotSum(const Tens& image, const Vec2<int>& start, const Vec2<int>& end, const Tens& filter) const
+    float MyConvLogic::dotSum(const Tensor<float>& image, const Vec2<int>& start, const Vec2<int>& end, const Tensor<float>& filter) const
     {
         float dot_sum = 0.f;
 

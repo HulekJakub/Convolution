@@ -2,7 +2,7 @@
 
 namespace convolution
 {
-    ConvData OnednnConv::execute(ConvData data)
+    ConvData<float> OnednnConv::execute(ConvData<float> data)
     {
         if(weights_.empty())
         {
@@ -159,7 +159,7 @@ namespace convolution
         // Read data from memory object's handle.
         read_from_dnnl_memory(dst_data.data(), user_dst_mem);
 
-        return ConvData(N, Vec3<int>(args_.nKernels(), OH, OW), dst_data);
+        return ConvData<float>(N, Vec3<int>(args_.nKernels(), OH, OW), dst_data);
     }
 
     unsigned long long OnednnConv::timeTaken() const
@@ -168,7 +168,7 @@ namespace convolution
     }
 
 
-    void OnednnConv::setWeights(const ConvData& weights)
+    void OnednnConv::setWeights(const ConvData<float>& weights)
     {
         weights_ = weights;
     }

@@ -4,7 +4,7 @@ using std::invalid_argument;
 
 namespace convolution
 {
-    ConvData MyConv::execute(ConvData data) 
+    ConvData<float> MyConv::execute(ConvData<float> data) 
     {
         std::cout << "Running with args: " << std::endl;
         args_.print();
@@ -18,7 +18,7 @@ namespace convolution
             throw std::string("Biases are not initialized");
         }
 
-        vector<Tensor> results;
+        vector<Tensor<float>> results;
         results.reserve(data.size());
 
         auto start_time = __rdtsc();
@@ -29,11 +29,11 @@ namespace convolution
         auto end_time = __rdtsc();
         time_taken_ += end_time - start_time;
 
-        return ConvData(results);
+        return ConvData<float>(results);
     }
 
 
-    void MyConv::setWeights(const vector<Tensor>& weights)
+    void MyConv::setWeights(const vector<Tensor<float>>& weights)
     {
         if(weights.size() != args_.nKernels() )
         {
@@ -55,7 +55,9 @@ namespace convolution
         weights_.reserve(args_.nKernels());
         for (size_t h = 0; h < weights_.capacity(); h++)
         {
-            weights_.push_back(Tensor(Vec3<int>(channels, args_.kernelSize().x(), args_.kernelSize().y())));
+            auto dims = Vec3<int>(channels, args_.kernelSize().x(), args_.kernelSize().y());
+            auto random_data = Tensor<float>::generate_data(dims);
+            weights_.push_back(Tensor<float>(random_data, dims));
         }
     }
 
@@ -74,7 +76,7 @@ namespace convolution
         std::generate(biases_.begin(), biases_.end(), getRandomBias);
     }
 
-    const vector<Tensor>& MyConv::weights() const
+    const vector<Tensor<float>>& MyConv::weights() const
     {
         return weights_;
     }

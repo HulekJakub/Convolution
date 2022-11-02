@@ -30,7 +30,7 @@ namespace convolution
     private:
         ConvArgs args_;
         MyConvLogic logic_;
-        vector<Tensor> weights_; 
+        vector<Tensor<float>> weights_; 
         vector<float> biases_; 
 
         unsigned long long time_taken_ = 0;
@@ -39,15 +39,15 @@ namespace convolution
 
     public:
         MyConv(ConvArgs args, MyConvLogic logic=MyConvLogic()): args_(args), logic_(logic) {}
-        ConvData execute(ConvData data);
-        void setWeights(const vector<Tensor>& weights);
+        ConvData<float> execute(ConvData<float> data);
+        void setWeights(const vector<Tensor<float>>& weights);
         void setWeights(int channels);
         void setBiases(const vector<float>& biases);
         void setBiases();
         ~MyConv(){}
 
         unsigned long long timeTaken() const;
-        const vector<Tensor>& weights() const;
+        const vector<Tensor<float>>& weights() const;
         const vector<float>& biases() const;
 
     };

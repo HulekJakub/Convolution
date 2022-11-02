@@ -20,27 +20,30 @@ using data::ConvData;
 using convolution::MyConv;
 using convolution::OnednnConv;
 
-vector<Tensor> generateData(int batches, int channels, int height, int width)
+vector<Tensor<float>> generateData(int batches, int channels, int height, int width)
 {
-  vector<Tensor> res;
+  vector<Tensor<float>> res;
   res.reserve(batches);
+
   for (size_t h = 0; h < batches; h++)
   {
-      res.push_back(Tensor(Vec3<int>(channels, height, width)));
+      auto dims = Vec3<int>(channels, height, width);
+      auto random_data = Tensor<float>::generate_data(dims);
+      res.push_back(Tensor<float>(random_data, dims));
   }
 
   return res;
 }
 
-vector<Tensor> generateOnes(int batches, int channels, int height, int width)
+vector<Tensor<float>> generateOnes(int batches, int channels, int height, int width)
 {
-  vector<Tensor> res;
+  vector<Tensor<float>> res;
   res.reserve(batches);
 
   for (size_t h = 0; h < batches; h++)
   {
     vector<float> data(channels * height * width, 1.f);
-    res.push_back(Tensor(data, Vec3<int>(channels, height, width)));
+    res.push_back(Tensor<float>(data, Vec3<int>(channels, height, width)));
   }
 
   return res;
@@ -49,13 +52,13 @@ vector<Tensor> generateOnes(int batches, int channels, int height, int width)
 int main(int argc, char** argv)
 {
   // Data and args setup
-  int n = 5, c = 3, h=256, w=256;
-  int n_kernels = 32, kernel_size = 5;
-  auto padding = vector<int> {4,4,4,4};
-  auto stride = 2;
+  int n = 1, c = 2, h=5, w=5;
+  int n_kernels = 1, kernel_size = 5;
+  auto padding = vector<int> {2,2,2,2};
+  auto stride = 1;
   
   ConvArgs args(n_kernels, Vec2<int>(kernel_size), Vec2<int>(stride), padding);
-  ConvData data(generateData(n, c, h, w));
+  ConvData<float> data(generateData(n, c, h, w));
 
   std::cout<<"Data: \n";
   for (auto &&batch : data)
@@ -68,7 +71,7 @@ int main(int argc, char** argv)
   myConv.setWeights(generateOnes(n_kernels, c, kernel_size, kernel_size));
   myConv.setBiases(vector<float>(n_kernels, 0));
 
-  auto iters = 100;
+  auto iters = 1;
 
   for (size_t i = 0; i < iters; i++)
   {
@@ -79,7 +82,7 @@ int main(int argc, char** argv)
       cout<<"Result: \n";
       for (auto &&batch : res)
       {
-        // batch.print();
+        batch.print();
       }
     }
     catch(const std::invalid_argument& e)
@@ -96,7 +99,7 @@ int main(int argc, char** argv)
   std::cout << std::string(100, '-') << std::endl;
   // OneDnn convolution
   OnednnConv onednnConv(args);
-  onednnConv.setWeights(ConvData(myConv.weights()));
+  onednnConv.setWeights(ConvData<float>(myConv.weights()));
   onednnConv.setBiases(vector<float>(n_kernels, 0));
 
   for (size_t i = 0; i < iters; i++)
@@ -108,7 +111,7 @@ int main(int argc, char** argv)
       cout<<"Result: \n";
       for (auto &&batch : res)
       {
-        // batch.print();
+        batch.print();
       }
     }
     catch(const std::invalid_argument& e)
