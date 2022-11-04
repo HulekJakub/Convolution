@@ -31,6 +31,7 @@ FetchContent_MakeAvailable(dnnl)
 add_library(conv_lib "")
 add_subdirectory(source/data)
 add_subdirectory(source/convolution)
+add_subdirectory(source/convolution_quant)
 add_subdirectory(source/utils)
 
 add_executable(my-convolution ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp) 

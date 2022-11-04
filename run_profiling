@@ -1,4 +1,7 @@
 mkdir -p profiling
+cd build
+make 
+cd ..
 cd profiling
 perf record --call-graph lbr ../build/my-convolution
 perf inject -j -i perf.data -o perf.data.j

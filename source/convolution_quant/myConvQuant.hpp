@@ -15,7 +15,8 @@
 #include "../data/convArgs.hpp"
 #include "../utils/tensor.hpp"
 #include "../utils/vec3.hpp"
-#include "myConvLogic.hpp"
+#include "myConvLogicQuant.hpp"
+#include "quantizationLogic.hpp"
 
 using data::ConvData;
 using utils::Tensor;
@@ -23,31 +24,39 @@ using data::ConvArgs;
 using std::vector;
 using utils::Vec3;
 
-namespace convolution
+namespace convolution_quant
 {
-    class MyConv
+    class MyConvQuant
     {
     private:
         ConvArgs args_;
-        MyConvLogic logic_;
-        vector<Tensor<float>> weights_; 
-        vector<float> biases_; 
+        MyConvLogicQuant logic_;
+        QuantizationLogic quant_logic_;
+        
+        vector<Tensor<int8_t>> weights_; 
+        vector<int32_t> biases_; 
+        vector<float> Qa_; 
+        vector<float> Qw_; 
+        float Qb_; 
+
+        vector<Tensor<float>> weights_float_; 
+        vector<float> biases_float_; 
 
         unsigned long long time_taken_ = 0;
 
         static float getRandomBias();
 
     public:
-        MyConv(ConvArgs args, MyConvLogic logic=MyConvLogic()): args_(args), logic_(logic) {}
+        MyConvQuant(ConvArgs args, MyConvLogicQuant logic=MyConvLogicQuant(), QuantizationLogic qunat_logic=QuantizationLogic()): args_(args), logic_(logic), quant_logic_(qunat_logic) {}
         ConvData<float> execute(ConvData<float> data);
         void setWeights(const vector<Tensor<float>>& weights);
         void setBiases(const vector<float>& biases);
         void setBiases();
-        ~MyConv(){}
+        ~MyConvQuant(){}
 
         unsigned long long timeTaken() const;
-        const vector<Tensor<float>>& weights() const;
-        const vector<float>& biases() const;
+        const vector<Tensor<int8_t>>& weights() const;
+        const vector<int32_t>& biases() const;
 
     };
     

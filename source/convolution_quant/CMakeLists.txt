@@ -1,0 +1,9 @@
+target_sources(conv_lib
+    PRIVATE
+        myConvQuant.cpp
+        myConvQuant.hpp
+        myConvLogicQuant.hpp
+        myConvLogicQuant.cpp
+        quantizationLogic.hpp
+        quantizationLogic.cpp
+)

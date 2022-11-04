@@ -31,7 +31,7 @@ namespace utils
         {   
             static std::default_random_engine e;
             e.seed(std::chrono::system_clock::now().time_since_epoch().count());
-            static std::uniform_real_distribution<> dis(-10, 10);
+            static std::uniform_real_distribution<> dis(0, 100);
             return dis(e);
         }
 

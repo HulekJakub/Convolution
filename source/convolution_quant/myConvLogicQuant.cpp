@@ -1,16 +1,16 @@
-#include "myConvLogic.hpp"
+#include "myConvLogicQuant.hpp"
 
 
-namespace convolution
+namespace convolution_quant
 {
-
-    Tensor<float> MyConvLogic::runConvolution(const Tensor<float>& image, const vector<Tensor<float>>& weights, vector<float> biases, const Vec2<int>& strides, const vector<int>& padding) const
+    Tensor<int32_t> MyConvLogicQuant::runConvolution(const Tensor<uint8_t>& image, const vector<Tensor<int8_t>>& weights, vector<int32_t> biases, const Vec2<int>& strides, const vector<int>& padding) const
     {
+        
         auto padded_image = padImage(image, padding);
         Vec2<int> kernel_size(weights.front().shape().y(), weights.front().shape().z());
         Vec3<int> output_shape = calculateOutputShape(padded_image.shape(), weights.size(), kernel_size, strides);
 
-        vector<float> result;
+        vector<int32_t> result;
         result.reserve(output_shape.mul());
 
         for (size_t i = 0; i < weights.size(); i++)
@@ -19,10 +19,10 @@ namespace convolution
             result.insert(result.end(), filterResults.begin(), filterResults.end());
         }
 
-        return Tensor<float>(result, output_shape);
+        return Tensor<int32_t>(result, output_shape);
     }
 
-    Vec3<int> MyConvLogic::calculateOutputShape(const Vec3<int>& padded_image_shape, int n_kernels, const Vec2<int>& kernel_size, const Vec2<int>& strides) const
+    Vec3<int> MyConvLogicQuant::calculateOutputShape(const Vec3<int>& padded_image_shape, int n_kernels, const Vec2<int>& kernel_size, const Vec2<int>& strides) const
     {
         int depth = n_kernels;
         int height = 1 + (padded_image_shape.y() - kernel_size.x()) / strides.x(); 
@@ -30,15 +30,14 @@ namespace convolution
         return Vec3<int>(depth, height, width);
     }
 
-
-    Tensor<float> MyConvLogic::padImage(const Tensor<float>& image, const vector<int>& padding) const
+    Tensor<uint8_t> MyConvLogicQuant::padImage(const Tensor<uint8_t>& image, const vector<int>& padding) const
     {
         if(padding == vector<int>(4, 0))
         {
             return image;
         }
         
-        vector<float> padded_image_data;
+        vector<uint8_t> padded_image_data;
         Vec3<int> padded_image_shape
         (
             image.shape().x(), 
@@ -47,7 +46,7 @@ namespace convolution
         );
 
         padded_image_data.reserve(padded_image_shape.mul());
-        vector<float> row_padding(padded_image_shape.z(), 0);
+        vector<uint8_t> row_padding(padded_image_shape.z(), 0);
 
 
         for(size_t c = 0; c < padded_image_shape.x(); c++)
@@ -73,15 +72,15 @@ namespace convolution
             }
         }
 
-        return Tensor<float>(padded_image_data, padded_image_shape);
+        return Tensor<uint8_t>(padded_image_data, padded_image_shape);
     }
 
-    vector<float> MyConvLogic::calculateForFilter(const Tensor<float>& image, const Tensor<float>& filter, float bias, const Vec2<int>& strides, const Vec3<int>& layer_output_shape) const
+    vector<int32_t> MyConvLogicQuant::calculateForFilter(const Tensor<uint8_t>& image, const Tensor<int8_t>& filter, int32_t bias, const Vec2<int>& strides, const Vec3<int>& layer_output_shape) const
     {
         auto filter_height = filter.shape().y();
         auto filter_width = filter.shape().z();
 
-        vector<float> result;
+        vector<int32_t> result;
         result.reserve(layer_output_shape.y() * layer_output_shape.z());
 
         for (size_t i = 0; i < layer_output_shape.y(); i++)
@@ -100,14 +99,14 @@ namespace convolution
         return result;
     }
 
-    float MyConvLogic::activationFunction(float x) const
+    int32_t MyConvLogicQuant::activationFunction(int32_t x) const
     {
-        return x < 0.0 ? 0.0 : x;
+        return x < 0 ? 0 : x;
     }
 
-    float MyConvLogic::dotSum(const Tensor<float>& image, const Vec2<int>& start, const Vec2<int>& end, const Tensor<float>& filter) const
+    int32_t  MyConvLogicQuant::dotSum(const Tensor<uint8_t>& image, const Vec2<int>& start, const Vec2<int>& end, const Tensor<int8_t>& filter) const
     {
-        float dot_sum = 0.f;
+        int32_t dot_sum = 0;
 
         int data_channel_size = image.shape().y() * image.shape().z();
         int data_channel_offset = 0;
@@ -115,14 +114,17 @@ namespace convolution
 
         int filter_channel_size = filter.shape().y() * filter.shape().z();
         int filter_channel_offset = 0;
+
         for (size_t i = 0; i < image.shape().x(); i++)
         {
             int data_row_idx = data_channel_offset + data_start_gap_offset;
             int filter_row_idx = filter_channel_offset;
+
             for (size_t j = 0; j < end.x() - start.x(); j++)
             {
-                const float* data_row = image.getDataPtr(data_row_idx);
-                const float* filter_row = filter.getDataPtr(filter_row_idx);
+                const uint8_t* data_row = image.getDataPtr(data_row_idx);
+                const int8_t* filter_row = filter.getDataPtr(filter_row_idx);
+
                 for (size_t k = 0; k < end.y() - start.y(); k++)
                 {
                     dot_sum += data_row[k] * filter_row[k];
