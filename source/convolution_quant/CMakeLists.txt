@@ -6,4 +6,6 @@ target_sources(conv_lib
         myConvLogicQuant.cpp
         quantizationLogic.hpp
         quantizationLogic.cpp
+        onednnConvQuant.hpp
+        onednnConvQuant.cpp
 )

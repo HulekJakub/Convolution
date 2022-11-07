@@ -153,9 +153,9 @@ namespace convolution_quant
         {
             if(i % size_channel == 0){
                 channel++;
-                Qwa = Qa[channel] * Qw[channel];
+                Qwa = 1 / (Qa[channel] * Qw[channel]);
             }
-            new_data[i] = *data_ptr / Qwa;
+            new_data[i] = *data_ptr * Qwa;
             ++data_ptr;
         }
 
